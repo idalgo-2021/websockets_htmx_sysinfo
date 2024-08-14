@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Info</title>
+    <script src="https://unpkg.com/htmx.org"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>System Information</h1>
+        <div id="update-timestamp">
+            <p><i class="fa fa-circle" style="color: red;"></i> Waiting for updates...</p>
+        </div>
+        <div id="system-data"></div>
+        <div id="cpu-data"></div>
+        <div id="disk-data"></div>
+    </div>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8080/ws");
+
+        ws.onmessage = function (event) {
+            const message = event.data;
+            if (message.startsWith("UPDATE_TIMESTAMP:")) {
+                document.getElementById('update-timestamp').innerHTML = message.replace("UPDATE_TIMESTAMP:", "");
+            } else if (message.startsWith("UPDATE_SYSTEM_DATA:")) {
+                document.getElementById('system-data').innerHTML = message.replace("UPDATE_SYSTEM_DATA:", "");
+            } else if (message.startsWith("UPDATE_DISK_DATA:")) {
+                document.getElementById('disk-data').innerHTML = message.replace("UPDATE_DISK_DATA:", "");
+            } else if (message.startsWith("UPDATE_CPU_DATA:")) {
+                document.getElementById('cpu-data').innerHTML = message.replace("UPDATE_CPU_DATA:", "");
+            }
+        };
+    </script>
+</body>
+</html>
